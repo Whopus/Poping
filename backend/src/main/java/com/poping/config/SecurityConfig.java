@@ -116,10 +116,13 @@ public class SecurityConfig {
                 .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/portal/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/portal/**").permitAll()
-                
+
                 // 智能体相关端点 - 允许匿名访问用于测试
                 .antMatchers(HttpMethod.GET, "/api/agents/**").permitAll()
-                
+
+                // 数据集进度WebSocket
+                .antMatchers("/api/v1/datasets/progress").permitAll()
+
                 // Swagger文档端点
                 .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/swagger-resources/**").permitAll()
