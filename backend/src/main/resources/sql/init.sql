@@ -81,26 +81,44 @@ CREATE TABLE IF NOT EXISTS `message` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='消息表';
 
 -- 数据集表
-CREATE TABLE IF NOT EXISTS `dataset` (
-    `id` BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '数据集ID',
-    `name` VARCHAR(100) NOT NULL COMMENT '数据集名称',
+CREATE TABLE IF NOT EXISTS `datasets` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '物理主键',
+    `dataset_id` VARCHAR(64) NOT NULL COMMENT '业务主键',
+    `name` VARCHAR(255) NOT NULL COMMENT '数据集名称',
     `description` TEXT COMMENT '数据集描述',
-    `type` ENUM('text', 'image', 'audio', 'video', 'mixed') NOT NULL COMMENT '数据类型',
-    `format` VARCHAR(50) COMMENT '数据格式',
-    `size` BIGINT DEFAULT 0 COMMENT '数据大小（字节）',
-    `record_count` BIGINT DEFAULT 0 COMMENT '记录数量',
-    `file_path` VARCHAR(500) COMMENT '文件路径',
-    `creator_user_id` BIGINT NOT NULL COMMENT '创建者用户ID',
-    `is_public` BOOLEAN DEFAULT FALSE COMMENT '是否公开',
-    `status` ENUM('processing', 'ready', 'error', 'deleted') DEFAULT 'processing' COMMENT '状态',
-    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    INDEX `idx_creator` (`creator_user_id`),
-    INDEX `idx_public_status` (`is_public`, `status`),
-    INDEX `idx_type` (`type`),
-    INDEX `idx_name` (`name`),
-    FOREIGN KEY (`creator_user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE
+    `data_type` VARCHAR(50) NOT NULL COMMENT '数据类型',
+    `tags` JSON DEFAULT NULL COMMENT '标签集合',
+    `status` VARCHAR(32) NOT NULL DEFAULT 'processing' COMMENT '状态',
+    `total_size` BIGINT NOT NULL DEFAULT 0 COMMENT '总大小',
+    `record_count` BIGINT NOT NULL DEFAULT 0 COMMENT '记录数量',
+    `processing_progress` INT NOT NULL DEFAULT 0 COMMENT '处理进度',
+    `owner_user_id` VARCHAR(36) DEFAULT NULL COMMENT '创建者业务ID',
+    `last_message` VARCHAR(500) DEFAULT NULL COMMENT '最新处理信息',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    UNIQUE KEY `uk_dataset_id` (`dataset_id`),
+    INDEX `idx_owner_user` (`owner_user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='数据集表';
+
+-- 数据集文件表
+CREATE TABLE IF NOT EXISTS `dataset_files` (
+    `id` BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '物理主键',
+    `file_id` VARCHAR(64) NOT NULL COMMENT '文件业务主键',
+    `dataset_db_id` BIGINT NOT NULL COMMENT '数据集物理主键',
+    `dataset_id` VARCHAR(64) NOT NULL COMMENT '数据集业务主键',
+    `original_name` VARCHAR(255) NOT NULL COMMENT '原始文件名',
+    `object_key` VARCHAR(255) NOT NULL COMMENT 'OSS对象Key',
+    `file_url` VARCHAR(512) NOT NULL COMMENT '文件URL',
+    `size` BIGINT NOT NULL COMMENT '文件大小',
+    `content_type` VARCHAR(128) DEFAULT NULL COMMENT '文件类型',
+    `parse_status` VARCHAR(32) NOT NULL DEFAULT 'pending' COMMENT '解析状态',
+    `parse_message` VARCHAR(500) DEFAULT NULL COMMENT '解析信息',
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    UNIQUE KEY `uk_dataset_file_id` (`file_id`),
+    INDEX `idx_dataset_db_id` (`dataset_db_id`),
+    INDEX `idx_dataset_id` (`dataset_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='数据集文件表';
 
 -- 订阅计划表
 CREATE TABLE IF NOT EXISTS `subscription_plan` (

@@ -143,6 +143,15 @@ const router = createRouter({
           }
         },
         {
+          path: 'dataset/:id',
+          name: 'DatasetDetail',
+          component: () => import('@/views/DatasetDetailPage.vue'),
+          meta: {
+            title: '数据集详情 - Poping',
+            requiresAuth: true
+          }
+        },
+        {
           path: 'agents',
           name: 'AgentManage',
           component: AgentManagePage,

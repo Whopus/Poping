@@ -255,6 +255,32 @@ const AdminIcon = {
   `
 }
 
+const CloseIcon = {
+  template: `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  `
+}
+
+const ActivityIcon = {
+  template: `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+    </svg>
+  `
+}
+
+const ArrowLeftIcon = {
+  template: `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="19" y1="12" x2="5" y2="12"></line>
+      <polyline points="12 19 5 12 12 5"></polyline>
+    </svg>
+  `
+}
+
 // 图标映射
 const iconMap = {
   dashboard: DashboardIcon,
@@ -270,6 +296,9 @@ const iconMap = {
   logout: LogoutIcon,
   help: HelpIcon,
   admin: AdminIcon,
+  close: CloseIcon,
+  activity: ActivityIcon,
+  'arrow-left': ArrowLeftIcon,
   analytics: AnalyticsIcon,
   api: ApiIcon,
   search: SearchIcon,
